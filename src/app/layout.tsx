@@ -17,7 +17,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-br" suppressHydrationWarning>
-      <body className={`${inter.className} h-[100vh] gradient`}>
+      <body
+        className={`${inter.className} gradient`}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
