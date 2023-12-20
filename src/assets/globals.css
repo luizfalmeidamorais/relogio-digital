@@ -33,8 +33,6 @@
     --ring: 240 10% 3.9%;
 
     --radius: 0.5rem;
-
-    --linear: linear-gradient(120deg, #ffe53bd8, #ff2525da);
   }
 
   .dark {
