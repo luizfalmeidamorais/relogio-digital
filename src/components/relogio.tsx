@@ -10,36 +10,22 @@ import {
 } from "./ui/select";
 import { MudarTema } from "./buttonTheme";
 
-type FusoHorario = {
+export type FusoHorario = {
   value: string;
   label: string;
 };
 
-export const fusosHorarios: FusoHorario[] = [
-  {
-    value: "America/Noronha",
-    label: "Fernando de Noronha (GMT-2)",
-  },
-  {
-    value: "America/Sao_Paulo",
-    label: "Brasília (GMT-3)",
-  },
-  {
-    value: "America/Manaus",
-    label: "Manaus (GMT-4)",
-  },
-  {
-    value: "America/Rio_Branco",
-    label: "Rio Branco (GMT-5)",
-  },
-];
+export default function Relogio({
+  fusosHorarios,
+}: {
+  fusosHorarios: FusoHorario[];
+}) {
+  const [loading, setLoading] = useState(true);
 
-export default function Relogio() {
   const [value, setValue] = useState("");
   const [message, setMessage] = useState("");
 
-  const [time, setTime] = useState({ horas: "", minutos: "", segundos: "" });
-  const [loading, setLoading] = useState(true);
+  const [time, setTime] = useState({ horas: "", minutos: "", segundos: "", dia: "", mes: "", ano: "" });
 
   useEffect(() => {
     const fuso = localStorage.getItem("fusoHorario");
@@ -58,16 +44,27 @@ export default function Relogio() {
           horas: "00",
           minutos: "00",
           segundos: "00",
+          dia: "00",
+          mes: "00",
+          ano: "00",
         };
       }
 
       const dataString = now.toLocaleTimeString("pt-BR", { timeZone: fuso });
       const [horas, minutos, segundos] = dataString.split(":");
+      const [dia, mes, ano] = now
+        .toLocaleDateString("pt-BR", {
+          timeZone: fuso,
+        })
+        .split("/");
 
       return {
         horas,
         minutos,
         segundos,
+        dia,
+        mes,
+        ano,
       };
     };
 
@@ -114,34 +111,43 @@ export default function Relogio() {
         )}
       </div>
 
-      <div className="flex-grow flex-col flex items-center justify-center -mt-12">
-        <div className="flex flex-col items-center justify-center mb-10 text-white">
-          <h1 className="text-4xl font-bold">Relógio Digital</h1>
-          <p className="text-md mt-2">
-            Acompanhe o horário de diferentes fusos.
-          </p>
-        </div>
-
-        <div className="flex items-center justify-around h-[200px] w-[700px] bg-transparent rounded-[3px]">
+      <div className="flex-grow flex-col flex items-center justify-center">
+        <div className="flex flex-col items-center justify-center mb-10 text-white -mt-12">
           {loading ? (
             <>
-              <Skeleton className="h-[170px] w-[150px] flex flex-col items-center justify-center bg-white dark:bg-relogio tracking-[3px] rounded-[7px]" />
-              <Skeleton className="h-[170px] w-[150px] flex flex-col items-center justify-center bg-white dark:bg-relogio tracking-[3px] rounded-[7px]" />
-              <Skeleton className="h-[170px] w-[150px] flex flex-col items-center justify-center bg-white dark:bg-relogio tracking-[3px] rounded-[7px]" />
+              <Skeleton className="h-[40px] w-[252.95px] bg-white dark:bg-relogio" />
+              <Skeleton className="h-[24px] w-[316.67px] bg-white dark:bg-relogio mt-2" />
             </>
           ) : (
             <>
-              <div className="h-[170px] w-[150px] flex flex-col items-center justify-center font-[60px] text-[rgba(5, 5, 5, 0.9)] dark:text-white bg-white dark:bg-relogio tracking-[3px] rounded-[7px]">
+              <h1 className="text-4xl font-bold">Relógio Digital</h1>
+              <p className="text-md mt-2">
+                {time.dia}/{time.mes}/{time.ano}
+              </p>
+            </>
+          )}
+        </div>
+
+        <div className="flex items-center justify-around h-1/3 max-md:mt-12 max-md:h-1/2 w-full bg-transparent rounded-[3px] max-md:justify-center max-md:gap-5 max-md:flex-col md:w-[700px]">
+          {loading ? (
+            <>
+              <Skeleton className="h-[170px] w-[150px] max-md:p-3 flex flex-col items-center justify-center bg-white dark:bg-relogio tracking-[3px] rounded-[7px]" />
+              <Skeleton className="h-[170px] w-[150px] max-md:p-3 flex flex-col items-center justify-center bg-white dark:bg-relogio tracking-[3px] rounded-[7px]" />
+              <Skeleton className="h-[170px] w-[150px] max-md:p-3 flex flex-col items-center justify-center bg-white dark:bg-relogio tracking-[3px] rounded-[7px]" />
+            </>
+          ) : (
+            <>
+              <div className="h-[170px] w-[150px] max-md:p-3 flex flex-col items-center justify-center font-[60px] text-[rgba(5, 5, 5, 0.9)] dark:text-white bg-white dark:bg-relogio tracking-[3px] rounded-[7px]">
                 <span className="font-bold text-[60px]">{time.horas}</span>
                 <span className="font-bold text-[10px] uppercase">Horas</span>
               </div>
 
-              <div className="h-[170px] w-[150px] flex flex-col items-center justify-center font-[60px] text-[rgba(5, 5, 5, 0.9)] dark:text-white bg-white dark:bg-relogio tracking-[3px] rounded-[7px]">
+              <div className="h-[170px] w-[150px] max-md:p-3 flex flex-col items-center justify-center font-[60px] text-[rgba(5, 5, 5, 0.9)] dark:text-white bg-white dark:bg-relogio tracking-[3px] rounded-[7px]">
                 <span className="font-bold text-[60px]">{time.minutos}</span>
                 <span className="font-bold text-[10px] uppercase">Minutos</span>
               </div>
 
-              <div className="h-[170px] w-[150px] flex flex-col items-center justify-center font-[60px] text-[rgba(5, 5, 5, 0.9)] dark:text-white bg-white dark:bg-relogio tracking-[3px] rounded-[7px]">
+              <div className="h-[170px] w-[150px] max-md:p-3 flex flex-col items-center justify-center font-[60px] text-[rgba(5, 5, 5, 0.9)] dark:text-white bg-white dark:bg-relogio tracking-[3px] rounded-[7px]">
                 <span className="font-bold text-[60px]">{time.segundos}</span>
                 <span className="font-bold text-[10px] uppercase">
                   Segundos
